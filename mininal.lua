@@ -42,8 +42,23 @@ lazy.setup({
     'mrcjkb/rustaceanvim',
     version = '^3',
     init = function()
+      local default_adapter = require("rustaceanvim.config.internal").dap.adapter()
       -- Configure rustaceanvim here
-      vim.g.rustaceanvim = {}
+      vim.g.rustaceanvim = vim.tbl_deep_extend(
+        'force',
+        default_adapter,
+        {
+          dap = {
+            adapter = {
+              type = "server",
+              enrich_config = function(config, on_config)
+                config.initCommands = { }
+                on_config(config)
+              end,
+            }
+          }
+        }
+      )
     end,
     ft = { 'rust' },
   },
